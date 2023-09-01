@@ -14,6 +14,7 @@ Tracklet-level detection, localization and recognition (experiments on SoccerNet
 
 ## Setup:
 Code makes use of the following repositories that need to be installed separately following corresponding setup for each repo:
+
 Centroid-Reid:
 https://github.com/mikwieczorek/centroids-reid
 https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK
