@@ -1,7 +1,5 @@
 # General framework for jersey number recognition in sports
 
-Includes:
-
 Image-level detection, localization and recognition (experiments on Hockey dataset):
   - legibility classifier
   - pose extraction
