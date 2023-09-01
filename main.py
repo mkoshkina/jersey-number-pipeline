@@ -171,8 +171,8 @@ def soccer_net_pipeline(args):
     input_json = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet']['pose_input_json'])
     output_json = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet']['pose_output_json'])
 
-    command = f"conda run -n {config.vitPoseEnv} python3 {config.ViTPoseHome}/demo/top_down_img_demo.py {config.ViTPoseHome}/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/ViTPose_huge_coco_256x192.py \
-        {config.ViTPoseHome}/checkpoints/vitpose-h.pth --img-root / --json-file {input_json} \
+    command = f"conda run -n {config.pose_env} python3 {config.pose_home}/demo/top_down_img_demo.py {config.pose_home}/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/ViTPose_huge_coco_256x192.py \
+        {config.pose_home}/checkpoints/vitpose-h.pth --img-root / --json-file {input_json} \
         --out-json {output_json}"
     os.system(command)
     print("Done detecting pose")
@@ -194,7 +194,7 @@ def soccer_net_pipeline(args):
     print("Predict numbers")
     image_dir = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet']['crops_folder'])
     str_result_file = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet']['jersey_id_result'])
-    command = f"conda run -n {config.parseqEnv} python3 {config.ParSeqHome}/test.py  {config.parseqCheckpoint}\
+    command = f"conda run -n {config.str_env} python3 {config.str_home}/test.py  {config.str_model}\
         --data_root={image_dir} --batch_size=1 --inference --result_file {str_result_file}"
     os.system(command)
     print("Done predict numbers")

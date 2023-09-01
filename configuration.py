@@ -1,20 +1,21 @@
-ViTPoseHome = '{UPDATE}/ViTPose'
-vitPoseEnv = 'vitpose'
+pose_home = 'pose/ViTPose'
+pose_env = 'vitpose'
+# TODO: include download instructions
 
-ParSeqHome = '{UPDATE}/parseq/'
-parseqEnv = 'parseq'
-parseqCheckpoint = 'models/parseq_epoch=24-step=2575-val_accuracy=95.6044-val_NED=96.3255.ckpt'
+str_home = 'str/parseq/'
+str_env = 'parseq'
+str_model = 'models/parseq_epoch=24-step=2575-val_accuracy=95.6044-val_NED=96.3255.ckpt'
 
-
+# TODO: figure out better way to handle this
 centroidEnv = 'centroidReid'
 
 dataset = {'SoccerNet':
-                {'root_dir': '{UPDATE}/SoccerNet',
-                 'working_dir': '{UPDATE}/SoccerNetResults',
+                {'root_dir': 'data/SoccerNet',
+                 'working_dir': 'out/SoccerNetResults',
                  'test': {
                         'images': 'test/images',
                         'gt': 'test/test_gt_updated.json',
-                        'feature_output_folder': '{UPDATE}/SoccerNetResults/test',
+                        'feature_output_folder': 'out/SoccerNetResults/test',
                     },
                  'legibility_model':  "models/resnet18_balanced_soccernet2.pth",
                  'illegible_result': 'illegible.json',
