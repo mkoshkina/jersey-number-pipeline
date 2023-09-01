@@ -14,7 +14,7 @@ Tracklet-level detection, localization and recognition (experiments on SoccerNet
   - scene text recognition for jersey numbers
   - tracklet prediction consolidation
 
-# SETUP:
+## Setup:
 Code makes use of the following repositories that need to be installed separately following corresponding setup for each repo:
 Centroid-Reid:
 https://github.com/mikwieczorek/centroids-reid
@@ -31,13 +31,13 @@ Our code requirements:
 pytorch 1.9.0
 opencv
 
-DATASETS:
+## Datasets:
 SoccerNet:
 https://github.com/SoccerNet/sn-jersey
 
 Hockey: to be released.
 
-CONFIGURATION:
+## Configuration:
 Update configuration.py to point to data and local installations of above repos.
 Update path in line 6 of centroid_reid.py to point to your local installation of centroids reid.
 
