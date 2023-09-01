@@ -15,18 +15,23 @@ Tracklet-level detection, localization and recognition (experiments on SoccerNet
 ## Setup:
 Code makes use of the following repositories that need to be installed separately following corresponding setup for each repo:
 
-Centroid-Reid:
+### Centroid-Reid:
 https://github.com/mikwieczorek/centroids-reid
 https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK
 
-ViTPose:
+### ViTPose:
 https://github.com/ViTAE-Transformer/ViTPose
 Model: https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe
 
-PARSeq:
+### PARSeq:
 https://github.com/baudm/parseq
 
-Our code requirements:
+### Trained Models:
+SoccerNet Legibility classifier: https://drive.google.com/file/d/1SdIDmlnyuPqqzobapZiohVVAyS61V5VX/view?usp=drive_link
+
+SoccerNet-tuned PARSeq: https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=drive_link
+
+### Requirements:
 pytorch 1.9.0
 opencv
 
