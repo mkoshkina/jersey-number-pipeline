@@ -16,15 +16,17 @@ Tracklet-level detection, localization and recognition (experiments on SoccerNet
 Code makes use of the following repositories that need to be installed separately following corresponding setup for each repo:
 
 ### Centroid-Reid:
-https://github.com/mikwieczorek/centroids-reid
-https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK
+Repo: https://github.com/mikwieczorek/centroids-reid
+
+Model: https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK
 
 ### ViTPose:
-https://github.com/ViTAE-Transformer/ViTPose
+Repo: https://github.com/ViTAE-Transformer/ViTPose
+
 Model: https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe
 
 ### PARSeq:
-https://github.com/baudm/parseq
+Repo: https://github.com/baudm/parseq
 
 ### Trained Models:
 SoccerNet Legibility classifier: https://drive.google.com/file/d/1SdIDmlnyuPqqzobapZiohVVAyS61V5VX/view?usp=drive_link
