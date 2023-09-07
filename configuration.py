@@ -1,13 +1,15 @@
 pose_home = 'pose/ViTPose'
-pose_env = 'vitpose'
+pose_env = 'vitpose2'
 # TODO: include download instructions
 
 str_home = 'str/parseq/'
-str_env = 'parseq'
+str_env = 'parseq2'
 str_model = 'models/parseq_epoch=24-step=2575-val_accuracy=95.6044-val_NED=96.3255.ckpt'
+str_platform = 'cu113'
 
 # TODO: figure out better way to handle this
-centroidEnv = 'centroidReid'
+reid_env = 'centroids'
+reid_home = 'reid/'
 
 dataset = {'SoccerNet':
                 {'root_dir': 'data/SoccerNet',

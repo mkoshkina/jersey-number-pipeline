@@ -3,7 +3,7 @@ import sys
 import os
 import argparse
 
-ROOT = f'{path-to-centroid-installation}centroids'
+ROOT = './reid/centroids-reid/'
 sys.path.append(str(ROOT))  # add ROOT to PATH
 
 import numpy as np
@@ -26,9 +26,6 @@ MODEL_FILE = str(ROOT+'/models/resnet50-19c8e357.pth')
 
 # dict used to get model config and weights using model version
 ver_to_specs = {}
-ver_to_specs["default"]      = (ROOT+'/configs/256_resnet50.yml', ROOT+'/models/resnet50-19c8e357.pth')
-ver_to_specs["res50"]        = (ROOT+'/configs/256_resnet50.yml', ROOT+'/models/resnet50-19c8e357.pth')
-ver_to_specs["res50_ibn_a"]  = (ROOT+'/configs/320_resnet50_ibn_a.yml', ROOT+'/models/r50_ibn_a.pth')
 ver_to_specs["res50_market"] = (ROOT+'/configs/256_resnet50.yml', ROOT+'/models/market1501_resnet50_256_128_epoch_120.ckpt')
 ver_to_specs["res50_duke"]   = (ROOT+'/configs/256_resnet50.yml', ROOT+'/models/dukemtmcreid_resnet50_256_128_epoch_120.ckpt')
 
