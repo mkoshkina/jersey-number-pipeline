@@ -4,6 +4,7 @@ import cv2
 import os
 import json
 import numpy as np
+from tqdm import tqdm
 
 json_img_template = { "id": 0,
             "file_name": "",
@@ -86,7 +87,7 @@ def generate_crops_for_all(json_file, crops_destination_dir):
     i = 0
     skipped = []
     saved = []
-    for entry in all_poses:
+    for entry in tqdm(all_poses):
         filtered_points = get_points(entry)
         img_name = entry["img_name"]
         if len(filtered_points) == 0:
@@ -222,7 +223,7 @@ def generate_crops(json_file, crops_destination_dir, legible_results):
     i = 0
     skipped = {}
     saved = []
-    for entry in all_poses:
+    for entry in tqdm(all_poses):
         filtered_points = get_points(entry)
         img_name = entry["img_name"]
 

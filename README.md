@@ -8,12 +8,17 @@ Image-level detection, localization and recognition (experiments on Hockey datas
 Tracklet-level detection, localization and recognition (experiments on SoccerNet dataset):
   - occlusion/outlier removal using re-id features and fitting a guassian
   - legibility classifier
-  - pose extraction
+  - pose-guided RoI cropping
   - scene text recognition for jersey numbers
   - tracklet prediction consolidation
 
 ## Setup:
-Code makes use of the following repositories that need to be installed separately following corresponding setup for each repo:
+Clone current repo.
+Create conda environment and install requirements.
+Code makes use of the several repositories. Run 
+> python3 setup.py 
+
+to automatically clone, setup a separate conda environment for each and fetch models.
 
 ### Centroid-Reid:
 Repo: https://github.com/mikwieczorek/centroids-reid
@@ -44,8 +49,7 @@ https://github.com/SoccerNet/sn-jersey
 Hockey: to be released.
 
 ## Configuration:
-Update configuration.py to point to data and local installations of above repos.
-Update path in line 6 of centroid_reid.py to point to your local installation of centroids reid.
+Update configuration.py as required to set custom path to data or dependencies. 
 
 Once the models are made available, run:
 > python3 main.py SoccerNet test
