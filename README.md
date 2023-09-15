@@ -49,7 +49,7 @@ Download and save under data subfolder.  Download updated test ground truth file
 that were wrongly labelled with number 1 in originally released data. The file can be downloaded from [here](https://drive.google.com/file/d/1mRnglyMiuuM6CYuzm-ZMFOG72ZeS_8ck/view?usp=sharing) and placed in the test subdirectory of SoccerNet
 dataset.
 
-Hockey: to be released.
+Hockey: Download legibility dataset and save under data subfolder: [https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing]
 
 ## Configuration:
 Update configuration.py as required to set custom path to data or dependencies. 
