@@ -45,11 +45,37 @@ opencv
 ## Datasets:
 SoccerNet:
 https://github.com/SoccerNet/sn-jersey
+Download and save under data subfolder.  Download updated test ground truth file that assigns -1 label to all ball tracks 
+that were wrongly labelled with number 1 in originally released data. The file can be downloaded from [here](https://drive.google.com/file/d/1mRnglyMiuuM6CYuzm-ZMFOG72ZeS_8ck/view?usp=sharing) and placed in the test subdirectory of SoccerNet
+dataset.
 
 Hockey: to be released.
 
 ## Configuration:
 Update configuration.py as required to set custom path to data or dependencies. 
 
-Once the models are made available, run:
+To run the full inference pipeline for SoccerNet:
 > python3 main.py SoccerNet test
+
+To run the full inference pipeline for hockey:
+> python3 TODO
+
+## Train (Hockey)
+Train legibility classifier for it:
+> python3 legibility_classifier.py --train --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
+
+## Train (SoccerNet)
+To train legibility classifier and jersey number recognition for SoccerNet, we first generate weakly labelled datasets and then use them to fine-tune.
+Weak labels are obtained by using models trained on hockey data.
+
+Generate SoccerNet weakly-labelled legibility data:
+> python3 weak_labels_generation.py --legibility --src <SoccerNet-directory>  --dst <new-dataset-directory>
+
+Train legibility classifier for it:
+> python3 legibility_classifier.py --finetune --data <new-dataset-directory> --new_trained_model_path ./experiments/sn_legibility.pth
+
+Generate SoccerNet weakly-labelled jersey numbers data:
+> python3 weak_labels_generation.py --numbers --src <SoccerNet-directory>  --dst <new-dataset-directory> --legible_json <legibility-dataset-directory>/legible.json
+
+Fine-tune PARSeq on weakly-labelled SoccerNet data:
+> python3 TODO

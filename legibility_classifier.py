@@ -13,7 +13,8 @@ import time
 import copy
 import argparse
 import os
-import numpy as np
+import configuration as cfg
+import time
 
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
@@ -175,24 +176,31 @@ if __name__ == '__main__':
     annotations_file = '_gt.txt'
 
 
-    image_dataset_train = JerseyNumberLegibilityDataset(os.path.join(args.data, 'train' + annotations_file),
-                                                        os.path.join(args.data, 'images'), 'train', isBalanced=False)
-    image_dataset_val = JerseyNumberLegibilityDataset(os.path.join(args.data, 'val' + annotations_file),
-                                                      os.path.join(args.data, 'images'), 'val')
-    image_dataset_test = JerseyNumberLegibilityDataset(os.path.join(args.data, 'val' + annotations_file),
-                                                       os.path.join(args.data, 'images'), 'test')
+    image_dataset_train = JerseyNumberLegibilityDataset(os.path.join(args.data, 'train', 'train' + annotations_file),
+                                                        os.path.join(args.data, 'train', 'images'), 'train', isBalanced=False)
+    image_dataset_val = JerseyNumberLegibilityDataset(os.path.join(args.data,'val', 'val' + annotations_file),
+                                                      os.path.join(args.data, 'val','images'), 'val')
+    if not args.train and not args.finetune:
+        image_dataset_test = JerseyNumberLegibilityDataset(os.path.join(args.data, 'test','test' + annotations_file),
+                                                       os.path.join(args.data, 'test', 'images'), 'test')
 
     dataloader_train = torch.utils.data.DataLoader(image_dataset_train, batch_size=4,
                                                    shuffle=True, num_workers=4)
     dataloader_val = torch.utils.data.DataLoader(image_dataset_val, batch_size=4,
                                                  shuffle=True, num_workers=4)
-    dataloader_test = torch.utils.data.DataLoader(image_dataset_test, batch_size=4,
+    if not args.train and not args.finetune:
+        dataloader_test = torch.utils.data.DataLoader(image_dataset_test, batch_size=4,
                                                   shuffle=False, num_workers=4)
 
-    image_datasets = {'train': image_dataset_train, 'val': image_dataset_val, 'test': image_dataset_test}
-    dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val', 'test']}
-    dataloaders = {'train': dataloader_train, 'val': dataloader_val, 'test': dataloader_test}
 
+    if not args.train and not args.finetune:
+        image_datasets = {'test': image_dataset_test}
+        dataset_sizes = {x: len(image_datasets[x]) for x in ['test']}
+        dataloaders = {'test': dataloader_test}
+    else:
+        image_datasets = {'train': image_dataset_train, 'val': image_dataset_val}
+        dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
+        dataloaders = {'train': dataloader_train, 'val': dataloader_val}
 
     model_ft = LegibilityClassifier()
     # create the model based on ResNet18 and train from pretrained version
@@ -207,11 +215,20 @@ if __name__ == '__main__':
         exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
         model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                                num_epochs=10)
-        torch.save(model_ft.state_dict(), args.trained_model_path)
+        if args.trained_model_path is None or args.trained_model_path == '':
+            timestr = time.strftime("%Y%m%d-%H%M%S")
+            save_model_path = f"./experiments/legibility_{timestr}.pth"
+        else:
+            save_model_path = args.trained_model_path
+        torch.save(model_ft.state_dict(), save_model_path)
 
     elif args.finetune:
+        if args.trained_model_path is None or args.trained_model_path == '':
+            load_model_path = cfg.dataset["Hockey"]['legibility_model']
+        else:
+            load_model_path = args.trained_model_path
         #load weights
-        state_dict = torch.load(args.trained_model_path, map_location=device)
+        state_dict = torch.load(load_model_path, map_location=device)
         if hasattr(state_dict, '_metadata'):
             del state_dict._metadata
         model_ft.load_state_dict(state_dict)
@@ -226,7 +243,12 @@ if __name__ == '__main__':
         exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
         model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                                num_epochs=10)
-        torch.save(model_ft.state_dict(), args.new_trained_model_path)
+        if args.new_trained_model_path is None or args.new_trained_model_path == '':
+            timestr = time.strftime("%Y%m%d-%H%M%S")
+            save_model_path = f"./experiments/legibility_{timestr}.pth"
+        else:
+            save_model_path = args.new_trained_model_path
+        torch.save(model_ft.state_dict(), save_model_path)
 
     else:
         #load weights

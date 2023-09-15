@@ -1,11 +1,10 @@
 import os
 import configuration as cfg
-import requests
 import json
 import urllib.request
 import gdown
-# clone and install centroid reid
-# download the model
+import argparse
+
 
 ###### common setup utils ##############
 
@@ -115,18 +114,7 @@ def setup_str(root):
 
     os.chdir(root)
 
-def download_models(root_dir):
-    # download and save fine-tuned model
-    save_path = os.path.join(root_dir, cfg.dataset['SoccerNet']['str_model'])
-    if not os.path.isfile(save_path):
-        source_url = cfg.dataset['SoccerNet']['str_model_url']
-        gdown.download(source_url, save_path)
-
-    save_path = os.path.join(root_dir, cfg.dataset['SoccerNet']['legibility_model'])
-    if not os.path.isfile(save_path):
-        source_url = cfg.dataset['SoccerNet']['legibility_model_url']
-        gdown.download(source_url, save_path)
-
+def download_models_common(root_dir):
     repo_name = "ViTPose"
     rep_path = "./pose"
 
@@ -138,9 +126,36 @@ def download_models(root_dir):
     if not os.path.isfile(save_path):
         gdown.download(url, save_path)
 
+def download_models(root_dir, dataset):
+    # download and save fine-tuned model
+    save_path = os.path.join(root_dir, cfg.dataset[dataset]['str_model'])
+    if not os.path.isfile(save_path):
+        source_url = cfg.dataset[dataset]['str_model_url']
+        gdown.download(source_url, save_path)
+
+    save_path = os.path.join(root_dir, cfg.dataset[dataset]['legibility_model'])
+    if not os.path.isfile(save_path):
+        source_url = cfg.dataset[dataset]['legibility_model_url']
+        gdown.download(source_url, save_path)
+
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dataset', default='all', help="Options: all, SoccerNet, Hockey")
+
+    args = parser.parse_args()
+
     root_dir = os.getcwd()
-    setup_reid(root_dir)
+
+    # common for both datasets
     setup_pose(root_dir)
+    download_models_common(root_dir)
     setup_str(root_dir)
-    download_models(root_dir)
+
+    # SoccerNet only
+    if not args.dataset == 'Hockey':
+        setup_reid(root_dir)
+        download_models(root_dir, 'SoccerNet')
+
+    if not args.dataset == 'SoccerNet':
+        download_models(root_dir, 'Hockey')

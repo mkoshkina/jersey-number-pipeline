@@ -32,5 +32,11 @@ dataset = {'SoccerNet':
                  'str_model_url': "https://drive.google.com/uc?id=1uRln22tlhneVt3P6MePmVxBWSLMsL3bm",
                  'jersey_id_result': 'jersey_id_results.json',
                  'final_result': 'final_results.json'
-                }
+                },
+           "Hockey": {
+                 'legibility_model':  'models/resne18_balanced2.pth',
+                 'legibility_model_url':  "https://drive.google.com/uc?id=1-wjjfwagysOuSc_wcs4ZurGBUfvcVqO6",
+                 'str_model': 'models/epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
+                 'str_model_url': "https://drive.google.com/uc?id=1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE"
             }
+        }
