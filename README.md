@@ -51,7 +51,7 @@ dataset.
 
 Hockey: 
 * Download legibility dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing](https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing)
-* Download jersey number dataset and save under data/Hockey subfolder: 
+* Download jersey number dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing](https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing)
 
 
 ## Configuration:
