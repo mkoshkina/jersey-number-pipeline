@@ -16,6 +16,7 @@ dataset = {'SoccerNet':
                         'gt': 'test/test_gt_updated.json',
                         'feature_output_folder': 'out/SoccerNetResults/test',
                     },
+                 'numbers_data': 'lmdb',
                  'legibility_model':  "models/resnet18_balanced_soccernet2.pth",
                  'legibility_model_url':  "https://drive.google.com/uc?id=1SdIDmlnyuPqqzobapZiohVVAyS61V5VX",
                  'illegible_result': 'illegible.json',

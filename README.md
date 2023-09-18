@@ -49,6 +49,8 @@ Download and save under data subfolder.  Download updated test ground truth file
 that were wrongly labelled with number 1 in originally released data. The file can be downloaded from [here](https://drive.google.com/file/d/1mRnglyMiuuM6CYuzm-ZMFOG72ZeS_8ck/view?usp=sharing) and placed in the test subdirectory of SoccerNet
 dataset.
 
+Jersey number crops used to fine-tune STR in LMDB format can be downloaded here: [https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing)
+
 Hockey: 
 * Download legibility dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing](https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing)
 * Download jersey number dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing](https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing)
@@ -68,7 +70,7 @@ To run the full inference pipeline for hockey:
 Train legibility classifier for it:
 > python3 legibility_classifier.py --train --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
 
-Fine-tune PARSer STR for hockey number recognition:
+Fine-tune PARSeq STR for hockey number recognition:
 > python3 Hockey train --train_str
 
 Trained model will be under str/parseq/outputs
@@ -87,4 +89,6 @@ Generate SoccerNet weakly-labelled jersey numbers data:
 > python3 weak_labels_generation.py --numbers --src <SoccerNet-directory>  --dst <new-dataset-directory> --legible_json <legibility-dataset-directory>/legible.json
 
 Fine-tune PARSeq on weakly-labelled SoccerNet data:
-> python3 TODO
+> python3 SoccerNet train --train_str
+
+Trained model will be under str/parseq/outputs.
