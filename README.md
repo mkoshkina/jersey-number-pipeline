@@ -16,28 +16,33 @@ Tracklet-level detection, localization and recognition (experiments on SoccerNet
 Clone current repo.
 Create conda environment and install requirements.
 Code makes use of the several repositories. Run 
+```
 > python3 setup.py 
+```
 
 to automatically clone, setup a separate conda environment for each and fetch models.
 
 ### Centroid-Reid:
 Repo: https://github.com/mikwieczorek/centroids-reid
 
-Model: https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK
+Model: [https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK](https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK)
 
 ### ViTPose:
 Repo: https://github.com/ViTAE-Transformer/ViTPose
 
-Model: https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe
+Model: [https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe](https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe)
 
 ### PARSeq:
-Repo: https://github.com/baudm/parseq
+Repo: [https://github.com/baudm/parseq](https://github.com/baudm/parseq)
 
 ### Trained Models:
-SoccerNet Legibility classifier: https://drive.google.com/file/d/1SdIDmlnyuPqqzobapZiohVVAyS61V5VX/view?usp=drive_link
+Hockey Legibility classifier: [https://drive.google.com/file/d/1-wjjfwagysOuSc_wcs4ZurGBUfvcVqO6/view?usp=sharing](https://drive.google.com/file/d/1-wjjfwagysOuSc_wcs4ZurGBUfvcVqO6/view?usp=sharing)
 
-SoccerNet-tuned PARSeq: https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=drive_link
+Hockey-tuned PARSeq: [https://drive.google.com/file/d/1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE/view?usp=sharing]()https://drive.google.com/file/d/1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE/view?usp=sharing
 
+SoccerNet Legibility classifier: [https://drive.google.com/file/d/1SdIDmlnyuPqqzobapZiohVVAyS61V5VX/view?usp=sharing](https://drive.google.com/file/d/1SdIDmlnyuPqqzobapZiohVVAyS61V5VX/view?usp=sharing)
+
+SoccerNet-tuned PARSeq: [https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=sharing](https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=sharing)
 ### Requirements:
 * pytorch 1.9.0
 * opencv
@@ -61,17 +66,23 @@ Update configuration.py as required to set custom path to data or dependencies.
 
 ## Inference:
 To run the full inference pipeline for SoccerNet:
+```
 > python3 main.py SoccerNet test
-
+```
 To run the full inference pipeline for hockey:
-> python3 main.py Hockey
-
+```
+> python3 main.py Hockey test
+```
 ## Train (Hockey)
 Train legibility classifier for it:
+```
 > python3 legibility_classifier.py --train --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
+```
 
 Fine-tune PARSeq STR for hockey number recognition:
+```
 > python3 Hockey train --train_str
+```
 
 Trained model will be under str/parseq/outputs
 
@@ -80,15 +91,23 @@ To train legibility classifier and jersey number recognition for SoccerNet, we f
 Weak labels are obtained by using models trained on hockey data.
 
 Generate SoccerNet weakly-labelled legibility data:
+```
 > python3 weak_labels_generation.py --legibility --src <SoccerNet-directory>  --dst <new-dataset-directory>
+```
 
 Train legibility classifier for it:
+```
 > python3 legibility_classifier.py --finetune --data <new-dataset-directory> --new_trained_model_path ./experiments/sn_legibility.pth
+```
 
 Generate SoccerNet weakly-labelled jersey numbers data:
+```
 > python3 weak_labels_generation.py --numbers --src <SoccerNet-directory>  --dst <new-dataset-directory> --legible_json <legibility-dataset-directory>/legible.json
+```
 
 Fine-tune PARSeq on weakly-labelled SoccerNet data:
+```
 > python3 SoccerNet train --train_str
+```
 
 Trained model will be under str/parseq/outputs.
