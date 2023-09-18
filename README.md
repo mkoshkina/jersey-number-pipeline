@@ -17,7 +17,7 @@ Clone current repo.
 Create conda environment and install requirements.
 Code makes use of the several repositories. Run 
 ```
-> python3 setup.py 
+python3 setup.py 
 ```
 
 to automatically clone, setup a separate conda environment for each and fetch models.
@@ -67,21 +67,21 @@ Update configuration.py as required to set custom path to data or dependencies.
 ## Inference:
 To run the full inference pipeline for SoccerNet:
 ```
-> python3 main.py SoccerNet test
+python3 main.py SoccerNet test
 ```
 To run the full inference pipeline for hockey:
 ```
-> python3 main.py Hockey test
+python3 main.py Hockey test
 ```
 ## Train (Hockey)
 Train legibility classifier for it:
 ```
-> python3 legibility_classifier.py --train --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
+python3 legibility_classifier.py --train --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
 ```
 
 Fine-tune PARSeq STR for hockey number recognition:
 ```
-> python3 Hockey train --train_str
+python3 Hockey train --train_str
 ```
 
 Trained model will be under str/parseq/outputs
@@ -92,22 +92,22 @@ Weak labels are obtained by using models trained on hockey data.
 
 Generate SoccerNet weakly-labelled legibility data:
 ```
-> python3 weak_labels_generation.py --legibility --src <SoccerNet-directory>  --dst <new-dataset-directory>
+python3 weak_labels_generation.py --legibility --src <SoccerNet-directory>  --dst <new-dataset-directory>
 ```
 
 Train legibility classifier for it:
 ```
-> python3 legibility_classifier.py --finetune --data <new-dataset-directory> --new_trained_model_path ./experiments/sn_legibility.pth
+python3 legibility_classifier.py --finetune --data <new-dataset-directory> --new_trained_model_path ./experiments/sn_legibility.pth
 ```
 
 Generate SoccerNet weakly-labelled jersey numbers data:
 ```
-> python3 weak_labels_generation.py --numbers --src <SoccerNet-directory>  --dst <new-dataset-directory> --legible_json <legibility-dataset-directory>/legible.json
+python3 weak_labels_generation.py --numbers --src <SoccerNet-directory>  --dst <new-dataset-directory> --legible_json <legibility-dataset-directory>/legible.json
 ```
 
 Fine-tune PARSeq on weakly-labelled SoccerNet data:
 ```
-> python3 SoccerNet train --train_str
+python3 SoccerNet train --train_str
 ```
 
 Trained model will be under str/parseq/outputs.
