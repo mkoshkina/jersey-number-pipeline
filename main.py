@@ -105,10 +105,45 @@ def consolidated_results(dict, illegible_path):
         dict[str(entry)] = -1
     return dict
 
+def train_parseq(args):
+    if args.dataset == 'Hockey':
+        print("Train PARSeq for Hockey")
+        parseq_dir = config.str_home
+        current_dir = os.getcwd()
+        os.chdir(parseq_dir)
+        data_root = os.path.join(current_dir, config.dataset['Hockey']['root_dir'], config.dataset['Hockey']['numbers_data'])
+        command = f"conda run -n {config.str_env} python3 train.py +experiment=parseq dataset=real data.root_dir={data_root} trainer.max_epochs=25 " \
+                  f"pretrained=parseq trainer.devices=1 trainer.val_check_interval=1 data.batch_size=128 data.max_label_length=2"
+        success = os.system(command) == 0
+        os.chdir(current_dir)
+        print("Done training")
+    else:
+        print("Train PARSeq for Soccer")
+
 
 def hockey_pipeline(args):
-    # Code to be released later
-    print("Code to be released")
+    # actions = {"legible": True,
+    #            "pose": False,
+    #            "crops": False,
+    #            "str": True}
+    success = True
+    # test legibility classification
+    if args.pipeline['legible']:
+        root_dir = os.path.join(config.dataset["Hockey"]["root_dir"], config.dataset["Hockey"]["legibility_data"])
+
+        print("Test legibility classifier")
+        command = f"python3 legibility_classifier.py --data {root_dir} --trained_model {config.dataset['Hockey']['legibility_model']}"
+        success = os.system(command) == 0
+        print("Done legibility classifier")
+
+    if success and args.pipeline['str']:
+        print("Predict numbers")
+        current_dir = os.getcwd()
+        data_root = os.path.join(current_dir, config.dataset['Hockey']['root_dir'], config.dataset['Hockey']['numbers_data'])
+        command = f"conda run -n {config.str_env} python3 str.py  {config.dataset['Hockey']['str_model']}\
+            --data_root={data_root}"
+        success = os.system(command) == 0
+        print("Done predict numbers")
 
 def soccer_net_pipeline(args):
     legible_dict = None
@@ -251,21 +286,31 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('dataset', help="Options: 'SoccerNet', 'Hockey'")
     parser.add_argument('part', help="Options: 'test', 'val', 'train'")
+    parser.add_argument('--train_str', action='store_true', default=False, help="Run training of jersey number recognition")
     args = parser.parse_args()
-    actions = {'feat': False,
-               "filter": False,
-               "legible": False,
-               "legible_eval": False,
-               "pose": False,
-               "crops": False,
-               "str": True,
-               "eval": True}
-    args.pipeline = actions
-    if args.dataset == 'SoccerNet':
-        soccer_net_pipeline(args)
-    elif args.dataset == 'Hockey':
-        hockey_pipeline(args)
+
+    if not args.train_str:
+        if args.dataset == 'SoccerNet':
+            actions = {'feat': False,
+                       "filter": False,
+                       "legible": False,
+                       "legible_eval": False,
+                       "pose": False,
+                       "crops": False,
+                       "str": True,
+                       "eval": True}
+            args.pipeline = actions
+            soccer_net_pipeline(args)
+        elif args.dataset == 'Hockey':
+            actions = {"legible": False,
+                       "pose": False,
+                       "crops": False,
+                       "str": True}
+            args.pipeline = actions
+            hockey_pipeline(args)
+        else:
+            print("Unknown dataset")
     else:
-        print("Unknown dataset")
+        train_parseq(args)
 
 

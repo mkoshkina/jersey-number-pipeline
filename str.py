@@ -272,14 +272,7 @@ def main():
 
 
 
-    test_set = tuple()
-    if args.std:
-        test_set = SceneTextDataModule.TEST_BENCHMARK_SUB + SceneTextDataModule.TEST_BENCHMARK
-    if args.custom:
-        test_set += SceneTextDataModule.TEST_CUSTOM
-    if args.new:
-        test_set += SceneTextDataModule.TEST_NEW
-    test_set = sorted(set(test_set))
+    test_set = ['JerseyNumbers']
 
     results = {}
     max_width = max(map(len, test_set))

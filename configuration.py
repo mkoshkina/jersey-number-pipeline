@@ -1,12 +1,10 @@
 pose_home = 'pose/ViTPose'
 pose_env = 'vitpose2'
-# TODO: include download instructions
 
 str_home = 'str/parseq/'
 str_env = 'parseq2'
 str_platform = 'cu113'
 
-# TODO: figure out better way to handle this
 reid_env = 'centroids'
 reid_home = 'reid/'
 
@@ -34,9 +32,12 @@ dataset = {'SoccerNet':
                  'final_result': 'final_results.json'
                 },
            "Hockey": {
+                 'root_dir': 'data/Hockey',
+                 'legibility_data': 'legibility_dataset',
+                 'numbers_data': 'jersey_number_dataset/jersey_numbers_lmdb',
                  'legibility_model':  'models/resne18_balanced2.pth',
                  'legibility_model_url':  "https://drive.google.com/uc?id=1-wjjfwagysOuSc_wcs4ZurGBUfvcVqO6",
-                 'str_model': 'models/epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
+                 'str_model': 'models/parseq_epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
                  'str_model_url': "https://drive.google.com/uc?id=1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE"
             }
         }

@@ -15,6 +15,7 @@ import argparse
 import os
 import configuration as cfg
 import time
+from tqdm import tqdm
 
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
@@ -93,7 +94,7 @@ def test_model(model, subset):
     # Iterate over data.
     temp_max = 500
     temp_count = 0
-    for inputs, labels in dataloaders[subset]:
+    for inputs, labels in tqdm(dataloaders[subset]):
         # print(f"input and label sizes:{len(inputs), len(labels)}")
         temp_count += len(labels)
         inputs = inputs.to(device)

@@ -39,8 +39,8 @@ SoccerNet Legibility classifier: https://drive.google.com/file/d/1SdIDmlnyuPqqzo
 SoccerNet-tuned PARSeq: https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=drive_link
 
 ### Requirements:
-pytorch 1.9.0
-opencv
+* pytorch 1.9.0
+* opencv
 
 ## Datasets:
 SoccerNet:
@@ -49,20 +49,29 @@ Download and save under data subfolder.  Download updated test ground truth file
 that were wrongly labelled with number 1 in originally released data. The file can be downloaded from [here](https://drive.google.com/file/d/1mRnglyMiuuM6CYuzm-ZMFOG72ZeS_8ck/view?usp=sharing) and placed in the test subdirectory of SoccerNet
 dataset.
 
-Hockey: Download legibility dataset and save under data subfolder: [https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing]
+Hockey: 
+* Download legibility dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing](https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing)
+* Download jersey number dataset and save under data/Hockey subfolder: 
+
 
 ## Configuration:
 Update configuration.py as required to set custom path to data or dependencies. 
 
+## Inference:
 To run the full inference pipeline for SoccerNet:
 > python3 main.py SoccerNet test
 
 To run the full inference pipeline for hockey:
-> python3 TODO
+> python3 main.py Hockey
 
 ## Train (Hockey)
 Train legibility classifier for it:
 > python3 legibility_classifier.py --train --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
+
+Fine-tune PARSer STR for hockey number recognition:
+> python3 Hockey train --train_str
+
+Trained model will be under str/parseq/outputs
 
 ## Train (SoccerNet)
 To train legibility classifier and jersey number recognition for SoccerNet, we first generate weakly labelled datasets and then use them to fine-tune.
