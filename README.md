@@ -2,7 +2,7 @@
 
 Image-level detection, localization and recognition (experiments on Hockey dataset):
   - legibility classifier
-  - pose extraction
+  - pose-guided RoI cropping
   - scene text recognition for jersey numbers
 
 Tracklet-level detection, localization and recognition (experiments on SoccerNet dataset):
@@ -111,3 +111,11 @@ python3 SoccerNet train --train_str
 ```
 
 Trained model will be under str/parseq/outputs.
+
+## Acknowledgement
+We would like to thank authors of the following repositories: 
+* [PARSeq](https://github.com/baudm/parseq)
+* [Centroid-Reid](https://github.com/mikwieczorek/centroids-reid)
+* [ViTPose](https://github.com/ViTAE-Transformer/ViTPose)
+* [SoccerNet](https://github.com/SoccerNet/sn-jersey)
+* [McGill Hockey Player Tracking Dataset](https://github.com/grant81/hockeyTrackingDataset)

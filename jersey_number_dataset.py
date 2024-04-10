@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset
 import numpy as np
+import torch
 import os
 import pandas as pd
 import json
@@ -7,23 +8,81 @@ from PIL import Image
 from torchvision import transforms
 
 data_transforms = {
-    'train': transforms.Compose([
-        transforms.RandomGrayscale(),
-        transforms.ColorJitter(brightness=.5, hue=.3),
+    'train': {
+        'resnet':
+            transforms.Compose([
+            transforms.RandomGrayscale(),
+            transforms.ColorJitter(brightness=.5, hue=.3),
+            transforms.Resize((256, 256)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # Image Net
+            #transforms.Normalize(mean=[0.548, 0.529, 0.539], std=[0.268, 0.280, 0.274]) # Hockey
+            ]),
+        'vit':
+            transforms.Compose([
+                transforms.RandomGrayscale(),
+                transforms.ColorJitter(brightness=.5, hue=.3),
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Image Net
+                # transforms.Normalize(mean=[0.548, 0.529, 0.539], std=[0.268, 0.280, 0.274]) # Hockey
+            ]),
+        },
+
+    # 'train_extra': transforms.Compose([
+    #     transforms.RandomGrayscale(),
+    #     transforms.ColorJitter(brightness=.5, hue=.3),
+    #     v2.ElasticTransform(alpha=250.0),
+    #     v2.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)),
+    #     v2.RandomAdjustSharpness(sharpness_factor=2),
+    #     v2.RandomAutocontrast(),
+    #     transforms.Resize((256, 256)),
+    #     transforms.ToTensor(),
+    #     transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+    # ]),
+    # 'train': transforms.Compose([
+    #     transforms.RandomChoice([
+    #         transforms.RandomGrayscale(),
+    #         transforms.RandomAdjustSharpness(3, p=0.5),
+    #         transforms.RandomAutocontrast(p=0.5),
+    #         transforms.RandomApply(torch.nn.ModuleList([transforms.GaussianBlur(kernel_size=(3, 5), sigma=(.8, 5.))]), p = 0.5),
+    #         transforms.RandomApply(torch.nn.ModuleList([transforms.ColorJitter(brightness=.8, contrast=0.8, saturation=0.5, hue=0.1)]), p = 0.5)]),
+    #     transforms.Resize((256, 256)),
+    #     transforms.ToTensor(),
+    #     transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+    # ]),
+    'val': {
+        'resnet':
+            transforms.Compose([
+            transforms.Resize((256, 256)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #ImageNet
+           #transforms.Normalize(mean=[0.548, 0.529, 0.539], std=[0.268, 0.280, 0.274]) # Hockey
+        ]),
+        'vit':
+            transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #ImageNet
+           #transforms.Normalize(mean=[0.548, 0.529, 0.539], std=[0.268, 0.280, 0.274]) # Hockey
+        ])
+    },
+    'test': {
+        'resnet':
+        transforms.Compose([ # same as val
         transforms.Resize((256, 256)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #ImageNet
+        #transforms.Normalize(mean=[0.548, 0.529, 0.539], std=[0.268, 0.280, 0.274]) # Hockey
     ]),
-    'val': transforms.Compose([
-        transforms.Resize((256, 256)),
+        'vit':
+        transforms.Compose([ # same as val
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #ImageNet
+        #transforms.Normalize(mean=[0.548, 0.529, 0.539], std=[0.268, 0.280, 0.274]) # Hockey
     ]),
-    'test': transforms.Compose([ # same as val
-        transforms.Resize((256, 256)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
-    ]),
+    }
 }
 
 class JerseyNumberDataset(Dataset):
@@ -74,8 +133,10 @@ class JerseyNumberMultitaskDataset(Dataset):
         return image, label, digit1, digit2
 
 class UnlabelledJerseyNumberLegibilityDataset(Dataset):
-    def __init__(self, image_paths, mode='test'):
-        self.transform = data_transforms[mode]
+    def __init__(self, image_paths, mode='test', arch='resnet18'):
+        if 'resnet' in arch:
+            arch = 'resnet'
+        self.transform = data_transforms[mode][arch]
         self.image_paths = image_paths
 
     def __len__(self):
@@ -89,16 +150,48 @@ class UnlabelledJerseyNumberLegibilityDataset(Dataset):
 
         return image
 
+class TrackletLegibilityDataset(Dataset):
+    def __init__(self, annotations_file, parent_dir, mode='test', arch='resnet18'):
+        if 'resnet' in arch:
+            arch = 'resnet'
+        self.transform = data_transforms[mode][arch]
+        with open(annotations_file, 'r') as f:
+            self.tracklet_labels = json.load(f)
+        tracklets = self.tracklet_labels.keys()
+        self.image_paths = []
+        for track in tracklets:
+            tracklet_dir = os.path.join(parent_dir, track)
+            images = os.listdir(tracklet_dir)
+            for im in images:
+                label = int(self.tracklet_labels[track])
+                label = 1 if label > 0 else 0
+                self.image_paths.append([os.path.join(tracklet_dir, im), track, label])
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        img_path, track, label = self.image_paths[idx]
+        image = Image.open(img_path).convert('RGB')
+        if self.transform:
+            image = self.transform(image)
+
+        return image, track, label
+
 
 class JerseyNumberLegibilityDataset(Dataset):
-    def __init__(self, annotations_file, img_dir, mode='train', isBalanced=False):
-        self.transform = data_transforms[mode]
+    def __init__(self, annotations_file, img_dir, mode='train', isBalanced=False, arch='resnet18'):
+        if 'resnet' in arch:
+            arch = 'resnet'
+        self.transform = data_transforms[mode][arch]
         self.img_labels = pd.read_csv(annotations_file)
         if isBalanced:
             legible =self.img_labels[self.img_labels.iloc[:,1]==1]
             count_legible = len(legible)
             illegible = self.img_labels[self.img_labels.iloc[:,1]==0]
-            illegible = illegible.sample(n=count_legible)
+            print(count_legible, len(illegible))
+            if len(illegible) > count_legible:
+                illegible = illegible.sample(n=count_legible)
             self.img_labels = pd.concat([legible, illegible])
             print(f"Balanced dataset: legibles = {count_legible} all = {len(self.img_labels)}")
         else:
@@ -119,5 +212,5 @@ class JerseyNumberLegibilityDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        return image, label
+        return image, label, self.img_labels.iloc[idx, 0]
 

@@ -83,10 +83,15 @@ def run_inference(model, data_root, result_file, img_size):
         image = transform(image)
         image = image.unsqueeze(0)
         logits = model.forward(image.to(model.device))
-        probs = logits.softmax(-1)
-        preds, probs = model.tokenizer.decode(probs)
+        #convert to 3 by 10
+        probs_full = logits[:,:3,:11].softmax(-1)
+        preds, probs = model.tokenizer.decode(probs_full)
+        logits = logits[:,:3,:11].cpu().detach().numpy()[0].tolist()
+        # probs = logits.softmax(-1)
+        # preds, probs = model.tokenizer.decode(probs)
+        probs_full = probs_full.cpu().detach().numpy()[0].tolist()
         confidence = probs[0].cpu().detach().numpy().squeeze().tolist()
-        results[filename] = {'label':preds[0], 'confidence':confidence}
+        results[filename] = {'label':preds[0], 'confidence':confidence, 'raw': probs_full, 'logits':logits}
     with open(result_file, 'w') as f:
         json.dump(results, f)
 
