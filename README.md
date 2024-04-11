@@ -12,12 +12,11 @@ Tracklet-level detection, localization and recognition (experiments on SoccerNet
   - scene text recognition for jersey numbers
   - tracklet prediction consolidation
 
-## Setup:
-
-### Requirements:
+## Requirements:
 * pytorch 1.9.0
 * opencv
 
+## Setup:
 Clone current repo.
 Create conda environment and install requirements.
 Code makes use of the several repositories. Run 
@@ -27,43 +26,45 @@ python3 setup.py
 
 to automatically clone, setup a separate conda environment for each and fetch models. Alternatively, setup these up manually:
 ### SAM:
-Repo: [https://github.com/davda54/sam](https://github.com/davda54/sam)
+Should be in jersey-number-pipeline/sam. Repo: [https://github.com/davda54/sam](https://github.com/davda54/sam)
 
 ### Centroid-Reid:
-Repo: [https://github.com/mikwieczorek/centroids-reid](https://github.com/mikwieczorek/centroids-reid)
-
-[Model weights](https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK)
+Should be in jersey-number-pipeline/reid/centroids-reid. Repo: [https://github.com/mikwieczorek/centroids-reid](https://github.com/mikwieczorek/centroids-reid).
+Download [centroid-reid model weights](https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK) and place 
+them under jersey-number-pipeline/reid/centroids-reid/models.
 
 ### ViTPose:
-Repo: [https://github.com/ViTAE-Transformer/ViTPose](https://github.com/ViTAE-Transformer/ViTPose)
-
-[Model weights](https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe)
+Should be in jersey-number-pipeline/pose/ViTPose. Repo: [https://github.com/ViTAE-Transformer/ViTPose](https://github.com/ViTAE-Transformer/ViTPose).
+Download [ViTPose model weights](https://1drv.ms/u/s!AimBgYV7JjTlgShLMI-kkmvNfF_h?e=dEhGHe) and place 
+them under jersey-number-pipeline/pose/ViTPose/checkpoints/.
 
 ### PARSeq:
-Repo: [https://github.com/baudm/parseq](https://github.com/baudm/parseq)
-[Original model weights]()
-[Hockey fine-tuned](https://drive.google.com/file/d/1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE/view?usp=sharing)
-[SoccerNet fine-tuned](https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=sharing)
+Should be in jersey-number-pipeline/str/parseq. Repo: [https://github.com/baudm/parseq](https://github.com/baudm/parseq). Model weights should be downloaded and placed
+under jersey-number-pipeline/models/. 
+* [Original model weights](https://drive.google.com/file/d/1AK_GnM6pIYyfIf3tBYSKIyR3Fa3Z46Cx/view?usp=sharing)
+* [Hockey fine-tuned](https://drive.google.com/file/d/1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE/view?usp=sharing)
+* [SoccerNet fine-tuned](https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=sharing)
 
 
 ## Datasets:
 SoccerNet:
-https://github.com/SoccerNet/sn-jersey
-Download and save under data subfolder. 
+[https://github.com/SoccerNet/sn-jersey](https://github.com/SoccerNet/sn-jersey)
+Download and save under /data subfolder. 
 
-Jersey number crops used to fine-tune STR in LMDB format can be downloaded here: [https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing)
+Weakly-labelled jersey number crops used to fine-tune STR in LMDB format can be downloaded [here](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing).
 
 Hockey: 
-* Download legibility dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing](https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing)
-* Download jersey number dataset and save under data/Hockey subfolder: [https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing](https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing)
+* Download legibility dataset and save under data/Hockey subfolder: [hockey legibility data](https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing)
+* Download jersey number dataset and save under data/Hockey subfolder: [hockey jersey number data](https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing)
 
 ### Trained Legibility Classifier Weights:
-[Hockey](https://drive.google.com/file/d/1RfxINtZ_wCNVF8iZsiMYuFOP7KMgqgDp/view?usp=sharing)
-[SoccerNet](https://drive.google.com/file/d/18HAuZbge3z8TSfRiX_FzsnKgiBs-RRNw/view?usp=sharing)
+Download and place under jersey-number-pipeline/models/.
+* [Hockey](https://drive.google.com/file/d/1RfxINtZ_wCNVF8iZsiMYuFOP7KMgqgDp/view?usp=sharing)
+* [SoccerNet](https://drive.google.com/file/d/18HAuZbge3z8TSfRiX_FzsnKgiBs-RRNw/view?usp=sharing)
 
 
 ## Configuration:
-Update configuration.py as required to set custom path to data or dependencies. 
+Update configuration.py if required to set custom path to data or dependencies. 
 
 ## Inference:
 To run the full inference pipeline for SoccerNet:
