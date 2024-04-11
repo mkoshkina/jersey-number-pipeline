@@ -21,13 +21,6 @@ import numpy as np
 
 from sam.sam import SAM
 
-RESULTS_PATH = ['experiments/legibility_sam_resnet18.txt', 'experiments/legibility_sam_resnet34.txt', 'experiments/legibility_sam_vit16.txt']
-GT_PATH = os.path.join('/media/storage/jersey_ids/legibility_dataset_combined', 'test', 'test_gt.txt')
-MODE_AVG = 'avg'
-MODE_W_AVG = 'wavg'
-MODE_VOTE = 'vote'
-weights = [0.714, 0.717, 0.728]
-
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
 
@@ -394,58 +387,6 @@ def run(image_paths, model_path, threshold=0.5, arch='resnet18'):
 
     return results
 
-def combine_results(mode=MODE_W_AVG):
-    gt = pd.read_csv(GT_PATH, names=['name', 'label'], header=None)
-    model_results = []
-    for p in RESULTS_PATH:
-        r = pd.read_csv(p, names=['name', 'label'], header=None)
-        model_results.append(r)
-    names = gt['name'].tolist()
-    number_of_models = len(RESULTS_PATH)
-    total, TN, TP, FP, FN = 0, 0, 0, 0, 0
-    for name in tqdm(names):
-        if mode == MODE_AVG:
-            sum_pred = 0
-            for result in model_results:
-                query = result[result['name'] == name]['label'].tolist()
-                if (len(query) == 0):
-                    continue
-                sum_pred += query[0]
-            pred = round(sum_pred / number_of_models)
-        elif mode == MODE_W_AVG:
-            sum_pred = 0
-            for i, result in enumerate(model_results):
-                query = result[result['name'] == name]['label'].tolist()
-                if (len(query) == 0):
-                    continue
-                sum_pred += weights[i]*query[0]
-            pred = round(sum_pred / sum(weights))
-        else: #mode is majority vote
-            binary_result = []
-            for i, result in enumerate(model_results):
-                query = result[result['name'] == name]['label'].tolist()
-                if (len(query) == 0):
-                    continue
-                binary_result.append(round(query[0]))
-            pred = 0 if sum(binary_result) < number_of_models else 1
-
-        true_value = gt[gt['name'] == name]['label'].tolist()[0]
-        predicted_legible = pred == 1
-        if true_value == 0 and not predicted_legible:
-            TN += 1
-        elif true_value != 0 and predicted_legible:
-            TP += 1
-        elif true_value == 0 and predicted_legible:
-            FP += 1
-        elif true_value != 0 and not predicted_legible:
-            FN += 1
-        total += 1
-    print(f'Correct {TP+TN} out of {total}. Accuracy {100*(TP+TN)/total}%.')
-    print(f'TP={TP}, TN={TN}, FP={FP}, FN={FN}')
-    Pr = TP / (TP + FP)
-    Recall = TP / (TP + FN)
-    print(f"Precision={Pr}, Recall={Recall}")
-    print(f"F1={2*Pr*Recall/(Pr+Recall)}")
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 cudnn.benchmark = True
@@ -453,17 +394,14 @@ cudnn.benchmark = True
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--train', action='store_true')
-    parser.add_argument('--sam', action='store_true')
-    parser.add_argument('--finetune', action='store_true')
-    parser.add_argument('--freeze', action='store_true')
+    parser.add_argument('--train', action='store_true', help='fine-tune model by loading public IMAGENET-trained weights')
+    parser.add_argument('--sam', action='store_true', help='Use Sharpness-Aware Minimization during training')
+    parser.add_argument('--finetune', action='store_true', help='load custom fine-tune weights for further training')
     parser.add_argument('--data', help='data root dir')
     parser.add_argument('--trained_model_path', help='trained model to use for testing or to load for finetuning')
     parser.add_argument('--new_trained_model_path', help='path to save newly trained model')
     parser.add_argument('--arch', choices=['resnet18', 'simple', 'resnet34', 'vit'], default='resnet18', help='what architecture to use')
-    parser.add_argument('--raw_result_path', help='store results here')
-    parser.add_argument('--combine_results', action='store_true')
-    parser.add_argument('--full_val_dir', help='tracklet val dir')
+    parser.add_argument('--full_val_dir', help='to use tracklet instead of images for validation specify val dir')
 
     args = parser.parse_args()
 
@@ -475,7 +413,6 @@ if __name__ == '__main__':
     if not args.train and not args.finetune:
         image_dataset_test = JerseyNumberLegibilityDataset(os.path.join(args.data, 'test', 'test' + annotations_file),
                                                        os.path.join(args.data, 'test', 'images'), 'test', arch=args.arch)
-    #image_dataset_test = image_dataset_val
 
     dataloader_train = torch.utils.data.DataLoader(image_dataset_train, batch_size=4,
                                                    shuffle=True, num_workers=4)
@@ -508,15 +445,14 @@ if __name__ == '__main__':
         dataloaders = {'train': dataloader_train, 'val': dataloader_val}
 
     if args.arch == 'resnet18':
-        model_ft = LegibilityClassifier(finetune=args.freeze)
+        model_ft = LegibilityClassifier()
     elif args.arch == 'simple':
         model_ft = LegibilitySimpleClassifier()
     elif args.arch == 'vit':
-        model_ft = LegibilityClassifierTransformer(finetune=args.freeze)
+        model_ft = LegibilityClassifierTransformer()
     else:
-        model_ft = LegibilityClassifier34(finetune=args.freeze)
+        model_ft = LegibilityClassifier34()
 
-    # create the model based on ResNet18 and train from pretrained version
     if args.train or args.finetune:
         if args.finetune:
             if args.trained_model_path is None or args.trained_model_path == '':
@@ -536,14 +472,11 @@ if __name__ == '__main__':
             base_optimizer = torch.optim.SGD
             optimizer_ft = SAM(model_ft.parameters(), base_optimizer, lr=0.001, momentum=0.9)
 
-            # Decay LR by a factor of 0.1 every 7 epochs
-            #exp_lr_scheduler = lr_scheduler.StepLR(base_optimizer, step_size=7, gamma=0.1)
             if use_full_validation:
                 model_ft = train_model_with_sam_and_full_val(model_ft, criterion, optimizer_ft, num_epochs=10)
             else:
                 model_ft = train_model_with_sam(model_ft, criterion, optimizer_ft, num_epochs=10)
         else:
-            # Observe that all parameters are being optimized
             optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
 
             # Decay LR by a factor of 0.1 every 7 epochs
@@ -556,8 +489,6 @@ if __name__ == '__main__':
 
         torch.save(model_ft.state_dict(), save_model_path)
 
-    elif (args.combine_results):
-        combine_results()
     else:
         #load weights
         state_dict = torch.load(args.trained_model_path, map_location=device)

@@ -116,100 +116,6 @@ def get_soccer_net_legibility_results(args, use_filtered = False, filter = 'sim'
 
     return legible_tracklets, illegible_tracklets
 
-def combine_legibility_results_via_F1(predictions, directory):
-    tracklet_predictions = []
-    raw_combined_results = []
-    for p in predictions:
-        tracklet_predictions.append(p[directory])
-    combined_results = []
-    weights = config.dataset['SoccerNet'][args.part]['f1_weights']
-    for i in range(len(tracklet_predictions[0])):
-        sum_pr = 0
-        for j, pr in enumerate(tracklet_predictions):
-            sum_pr += weights[j] * tracklet_predictions[j][i]
-        new_prediction = sum_pr / sum(weights)
-        combined_results.append(round(new_prediction))
-        raw_combined_results.append(new_prediction)
-    return combined_results, raw_combined_results
-
-
-def get_soccer_net_combined_legibility_results(args, use_filtered=True, filter='gauss', exclude_balls=True):
-    root_dir = config.dataset['SoccerNet']['root_dir']
-    image_dir = config.dataset['SoccerNet'][args.part]['images']
-    path_to_images = os.path.join(root_dir, image_dir)
-    tracklets = os.listdir(path_to_images)
-
-    if use_filtered:
-        if filter == 'sim':
-            path_to_filter_results = os.path.join(config.dataset['SoccerNet']['working_dir'],
-                                                  config.dataset['SoccerNet'][args.part]['sim_filtered'])
-        else:
-            path_to_filter_results = os.path.join(config.dataset['SoccerNet']['working_dir'],
-                                                  config.dataset['SoccerNet'][args.part]['gauss_filtered'])
-        with open(path_to_filter_results, 'r') as f:
-            filtered = json.load(f)
-
-    legible_tracklets = {}
-    legible_tracklets_raw = {}
-    illegible_tracklets = []
-
-    if exclude_balls:
-        updated_tracklets = []
-        soccer_ball_list = os.path.join(config.dataset['SoccerNet']['working_dir'],
-                                        config.dataset['SoccerNet'][args.part]['soccer_ball_list'])
-        with open(soccer_ball_list, 'r') as f:
-            ball_json = json.load(f)
-        ball_list = ball_json['ball_tracks']
-        for track in tracklets:
-            if not track in ball_list:
-                updated_tracklets.append(track)
-        tracklets = updated_tracklets
-
-    predictions = []
-    # read all results
-    for raw_file_name in config.dataset['SoccerNet'][args.part]['legibility_to_combine']:
-        raw_file_path = os.path.join(config.dataset['SoccerNet']['working_dir'], raw_file_name)
-        with open(raw_file_path, 'r') as f:
-            raw_json = json.load(f)
-            predictions.append(raw_json)
-
-    for directory in tqdm(tracklets):
-        track_dir = os.path.join(path_to_images, directory)
-        if use_filtered:
-            images = filtered[directory]
-        else:
-            images = os.listdir(track_dir)
-        images_full_path = [os.path.join(track_dir, x) for x in images]
-        track_results, raw_track_results = combine_legibility_results_via_F1(predictions, directory)
-        legible = list(np.nonzero(track_results))[0]
-        if len(legible) == 0:
-            illegible_tracklets.append(directory)
-        else:
-            legible_images = [images_full_path[i] for i in legible]
-            legible_tracklets[directory] = legible_images
-            legible_tracklets_raw[directory] = [{images_full_path[i]:raw_track_results[i]} for i in legible]
-
-    # save results
-    json_object = json.dumps(legible_tracklets, indent=4)
-    full_legibile_path = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['legible_result'])
-    with open(full_legibile_path, "w") as outfile:
-        outfile.write(json_object)
-
-    full_illegibile_path = os.path.join(config.dataset['SoccerNet']['working_dir'], config. dataset['SoccerNet'][args.part]['illegible_result'])
-    json_object = json.dumps({'illegible': illegible_tracklets}, indent=4)
-    with open(full_illegibile_path, "w") as outfile:
-        outfile.write(json_object)
-
-    if len(config.dataset['SoccerNet'][args.part]['raw_legible_result']) > 0:
-        json_object = json.dumps(legible_tracklets_raw, indent=4)
-        full_legibile_path = os.path.join(config.dataset['SoccerNet']['working_dir'],
-                                          config.dataset['SoccerNet'][args.part]['raw_legible_result'])
-        with open(full_legibile_path, "w") as outfile:
-            outfile.write(json_object)
-
-    return legible_tracklets, illegible_tracklets
-
-
 
 def generate_json_for_pose_estimator(args, legible = None):
     all_files = []
@@ -291,7 +197,7 @@ def hockey_pipeline(args):
         root_dir = os.path.join(config.dataset["Hockey"]["root_dir"], config.dataset["Hockey"]["legibility_data"])
 
         print("Test legibility classifier")
-        command = f"python3 legibility_classifier.py --data {root_dir} --trained_model {config.dataset['Hockey']['legibility_model']}"
+        command = f"python3 legibility_classifier.py --data {root_dir} --arch resnet34 --trained_model {config.dataset['Hockey']['legibility_model']}"
         success = os.system(command) == 0
         print("Done legibility classifier")
 
@@ -471,20 +377,20 @@ if __name__ == '__main__':
             actions = {"soccer_ball_filter": False,
                        "feat": False,
                        "filter": False,
-                       "legible": False,
-                       "legible_eval": False,
+                       "legible": True,
+                       "legible_eval": True,
                        "pose": False,
                        "crops": False,
                        "str": False,
-                       "combine": True,
-                       "eval": True}
+                       "combine": False,
+                       "eval": False}
             args.pipeline = actions
             soccer_net_pipeline(args)
         elif args.dataset == 'Hockey':
-            actions = {"legible": False,
+            actions = {"legible": True,
                        "pose": False,
                        "crops": False,
-                       "str": True}
+                       "str": False}
             args.pipeline = actions
             hockey_pipeline(args)
         else:

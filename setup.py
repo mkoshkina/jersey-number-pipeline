@@ -138,6 +138,15 @@ def download_models(root_dir, dataset):
         source_url = cfg.dataset[dataset]['legibility_model_url']
         gdown.download(source_url, save_path)
 
+def setup_sam(root_dir):
+    os.chdir(root_dir)
+    repo_name = 'sam2'
+    src_url = 'https://github.com/davda54/sam'
+
+    if not repo_name in os.listdir(root_dir):
+        # clone source repo
+        os.system(f"git clone --recurse-submodules {src_url} {os.path.join(root_dir, repo_name)}")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -148,11 +157,12 @@ if __name__ == '__main__':
     root_dir = os.getcwd()
 
     # common for both datasets
+    setup_sam(root_dir)
     setup_pose(root_dir)
     download_models_common(root_dir)
     setup_str(root_dir)
 
-    # SoccerNet only
+    #SoccerNet only
     if not args.dataset == 'Hockey':
         setup_reid(root_dir)
         download_models(root_dir, 'SoccerNet')

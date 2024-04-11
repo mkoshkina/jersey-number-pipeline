@@ -6,12 +6,8 @@ str_env = 'parseq2'
 str_platform = 'cu113'
 
 # centroids
-#reid_env = 'centroids'
-#reid_script = 'centroid_reid.py'
-
-#fastereid (soccernet fine-tuned)
-reid_env = 'SUSHI'
-reid_script = 'fast_reid.py'
+reid_env = 'centroids'
+reid_script = 'centroid_reid.py'
 
 reid_home = 'reid/'
 
@@ -21,18 +17,13 @@ dataset = {'SoccerNet':
                  'working_dir': './out/SoccerNetResults',
                  'test': {
                         'images': 'test/images',
-                        #'gt': 'test/test_gt_updated.json',
                         'gt': 'test/test_gt.json',
-                        #'feature_output_folder': 'out/SoccerNetResults/fastreid_feat_test',
                         'feature_output_folder': 'out/SoccerNetResults/test',
                         'illegible_result': 'illegible.json',
-                        #'illegible_result': 'illegible_no_f.json',
                         'soccer_ball_list': 'soccer_ball.json',
                         'sim_filtered': 'test/main_subject_0.4.json',
                         'gauss_filtered': 'test/main_subject_gauss_th=3.5_r=3.json',
-                        #'gauss_filtered': 'fastreid_feat_test/main_subject_gauss_th=3.5_r=3.json',
                         'legible_result': 'legible.json',
-                        #'legible_result': 'legible_no_f.json',
                         'raw_legible_result': 'raw_legible_resnet34.json',
                         'pose_input_json': 'pose_input.json',
                         'pose_output_json': 'pose_results.json',
@@ -92,30 +83,14 @@ dataset = {'SoccerNet':
                         'f1_weights': [0.94, 0.94, 0.936]
                  },
                  'numbers_data': 'lmdb',
-                 #'legibility_model':  "models/resnet18_balanced_soccernet2.pth",
-                 #'legibility_model': "experiments/legibility_20240125-175809.pth", # last layer only
-                 #'legibility_model':  "experiments/legibility_20230920-172729.pth",
-                 #'legibility_model':  "experiments/legibility_20231107-135057.pth",
-                 #'legibility_model':  "experiments/legibility_20231219-155728.pth",
-                 #'legibility_model': "experiments/legibility_resnet34_20240126-190907.pth",
 
-                 #'legibility_model': "experiments/legibility_resnet18_20240201-172254.pth", #hockey-trained with sam
-                 #'legibility_model': "experiments/legibility_vit_20240202-000631.pth", #hockey-trained with sam
-                 #'legibility_model': "experiments/legibility_resnet34_20240201-180522.pth", #hockey-trained with sam
-
-                 #'legibility_model': "experiments/legibility_resnet18_20240207-170956.pth", #soccer trained with sam
-                 #'legibility_model': "experiments/legibility_resnet18_20240208-121430.pth",
-
-                 'legibility_model': "experiments/legibility_resnet34_20240215-152213.pth",
-                 #'legibility_model': "experiments/legibility_vit_20240215-223129.pth",
+                 'legibility_model': "models/legibility_resnet34_soccer_20240215.pth",
                  'legibility_model_arch': "resnet34",
 
-
-                 'legibility_model_url':  "https://drive.google.com/uc?id=1SdIDmlnyuPqqzobapZiohVVAyS61V5VX",
+                 'legibility_model_url':  "https://drive.google.com/uc?id=18HAuZbge3z8TSfRiX_FzsnKgiBs-RRNw",
                  'pose_model_url': 'https://drive.google.com/uc?id=1A3ftF118IcxMn_QONndR-8dPWpf7XzdV',
-                 #'str_model':'models/parseq_epoch=0-step=582-val_accuracy=91.5826-val_NED=93.9535.ckpt',
                  'str_model': 'models/parseq_epoch=24-step=2575-val_accuracy=95.6044-val_NED=96.3255.ckpt',
-                 #'str_model': 'models/parseq_epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
+
                  #'str_model': 'pretrained=parseq',
                  'str_model_url': "https://drive.google.com/uc?id=1uRln22tlhneVt3P6MePmVxBWSLMsL3bm",
                 },
@@ -123,8 +98,8 @@ dataset = {'SoccerNet':
                  'root_dir': 'data/Hockey',
                  'legibility_data': 'legibility_dataset',
                  'numbers_data': 'jersey_number_dataset/jersey_numbers_lmdb',
-                 'legibility_model':  'models/resne18_balanced2.pth',
-                 'legibility_model_url':  "https://drive.google.com/uc?id=1-wjjfwagysOuSc_wcs4ZurGBUfvcVqO6",
+                 'legibility_model':  'models/legibility_resnet34_hockey_20240201.pth',
+                 'legibility_model_url':  "https://drive.google.com/uc?id=1RfxINtZ_wCNVF8iZsiMYuFOP7KMgqgDp",
                  #'str_model': 'models/parseq_epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
                  #'str_model': 'models/parseq_epoch=0-step=582-val_accuracy=91.5826-val_NED=93.9535.ckpt',
                  'str_model': 'models/parseq_epoch=24-step=2575-val_accuracy=95.6044-val_NED=96.3255.ckpt',
