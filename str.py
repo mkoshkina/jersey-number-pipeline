@@ -300,7 +300,7 @@ def main():
         mean_conf = 100 * confidence / total
         mean_label_length = label_length / total
         results[name] = Result(name, total, accuracy, mean_ned, mean_conf, mean_label_length)
-        print(accuracy, mean_conf)
+        print(f"accuracy:{accuracy}, mean_conf:{mean_conf}")
 
     result_groups = {
         'Benchmark (Subset)': SceneTextDataModule.TEST_BENCHMARK_SUB,

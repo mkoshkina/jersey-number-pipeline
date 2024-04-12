@@ -1,12 +1,14 @@
 # General Framework for Jersey Number Recognition in Sports
+Code, data, and model weights for paper  [General Framework for Jersey Number Recognition in Sports]() (Maria Koshkina, James H. Elder).
+
+![Pipeline](docs/soccer-pipeline.pdf)
 
 Image-level detection, localization and recognition (experiments on Hockey dataset):
   - legibility classifier
-  - pose-guided RoI cropping
   - scene text recognition for jersey numbers
 
 Tracklet-level detection, localization and recognition (experiments on SoccerNet dataset):
-  - occlusion/outlier removal using re-id features and fitting a guassian
+  - occlusion/outlier removal using re-id features and fitting a Gaussian
   - legibility classifier
   - pose-guided RoI cropping
   - scene text recognition for jersey numbers
@@ -24,13 +26,15 @@ Code makes use of the several repositories. Run
 python3 setup.py 
 ```
 
-to automatically clone, setup a separate conda environment for each and fetch models. Alternatively, setup these up manually:
+to automatically clone, setup a separate conda environment for each and fetch models. 
+
+Alternatively,  clone each of the following repo, setup conda environments for each following documentation in corresponding repo, and download models:
 ### SAM:
 Should be in jersey-number-pipeline/sam. Repo: [https://github.com/davda54/sam](https://github.com/davda54/sam)
 
 ### Centroid-Reid:
 Should be in jersey-number-pipeline/reid/centroids-reid. Repo: [https://github.com/mikwieczorek/centroids-reid](https://github.com/mikwieczorek/centroids-reid).
-Download [centroid-reid model weights](https://drive.google.com/drive/folders/1NWD2Q0JGasGm9HTcOy4ZqsIqK4-IfknK) and place 
+Download [centroid-reid model weights](https://drive.google.com/file/d/1bSUNpvMfJkvCFOu-TK-o7iGY1p-9BxmO/view?usp=sharing) and place 
 them under jersey-number-pipeline/reid/centroids-reid/models.
 
 ### ViTPose:
@@ -46,16 +50,16 @@ under jersey-number-pipeline/models/.
 * [SoccerNet fine-tuned](https://drive.google.com/file/d/1uRln22tlhneVt3P6MePmVxBWSLMsL3bm/view?usp=sharing)
 
 
-## Datasets:
-SoccerNet:
+## Data:
+SoccerNet Jersey Number Recognition:
 [https://github.com/SoccerNet/sn-jersey](https://github.com/SoccerNet/sn-jersey)
 Download and save under /data subfolder. 
 
-Weakly-labelled jersey number crops used to fine-tune STR in LMDB format can be downloaded [here](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing).
+* Weakly-labelled player images used to train legibility classifier can be downloaded [here](https://drive.google.com/file/d/1CmJfUmS_ZudgEiCT14b2CbyMA3nEO_uy/view?usp=sharing). 
+* Weakly-labelled jersey number crops used to fine-tune STR in LMDB format can be downloaded [here](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing).
 
-Hockey: 
-* Download legibility dataset and save under data/Hockey subfolder: [hockey legibility data](https://drive.google.com/file/d/1Hmm7JDomA_1eOC688OKNCISvLo8emfXW/view?usp=sharing)
-* Download jersey number dataset and save under data/Hockey subfolder: [hockey jersey number data](https://drive.google.com/file/d/1lVoZdOz1RDr6f__MN2irOWf_RHrf-eiD/view?usp=sharing)
+Hockey (comprised of legibility dataset and jersey number dataset): 
+* Download and extract under data/Hockey subfolder - [hockey data](https://drive.google.com/file/d/16ooDZsrLd8iF-KByGThT6I5Cw4GAT_x9/view?usp=sharing)
 
 ### Trained Legibility Classifier Weights:
 Download and place under jersey-number-pipeline/models/.
@@ -71,14 +75,16 @@ To run the full inference pipeline for SoccerNet:
 ```
 python3 main.py SoccerNet test
 ```
-To run the full inference pipeline for hockey:
+To run legibility and jersey number inference for hockey:
 ```
 python3 main.py Hockey test
 ```
+Update actions in main.py actions list to run steps selectively.
+
 ## Train (Hockey)
-Train legibility classifier for it:
+Train legibility classifier:
 ```
-python3 legibility_classifier.py --train --arch resnet34 --sam --data <new-dataset-directory> --trained_model_path ./experiments/sn_legibility.pth
+python3 legibility_classifier.py --train --arch resnet34 --sam --data <new-dataset-directory> --trained_model_path ./experiments/hockey_legibility.pth
 ```
 
 Fine-tune PARSeq STR for hockey number recognition:
@@ -92,19 +98,10 @@ Trained model will be under str/parseq/outputs
 To train legibility classifier and jersey number recognition for SoccerNet, we first generate weakly labelled datasets and then use them to fine-tune.
 Weak labels are obtained by using models trained on hockey data.
 
-Generate SoccerNet weakly-labelled legibility data or download pre-genereated [here]():
-```
-python3 weak_labels_generation.py --legibility --src <SoccerNet-directory>  --dst <new-dataset-directory>
-```
-
 Train legibility classifier for it:
 ```
-python3 legibility_classifier.py --finetune --arch resnet34 --sam --data <new-dataset-directory> --new_trained_model_path ./experiments/sn_legibility.pth
-```
-
-Generate SoccerNet weakly-labelled jersey numbers data:
-```
-python3 weak_labels_generation.py --numbers --src <SoccerNet-directory>  --dst <new-dataset-directory> --legible_json <legibility-dataset-directory>/legible.json
+python3 legibility_classifier.py --finetune --arch resnet34 --sam --data <new-dataset-directory>  --full_val_dir
+<new-dataset-directory>/val --trained_model_path ./experiments/hockey_legibility.pth --new_trained_model_path ./experiments/sn_legibility.pth
 ```
 
 Fine-tune PARSeq on weakly-labelled SoccerNet data:
@@ -122,3 +119,8 @@ We would like to thank authors of the following repositories:
 * [SoccerNet](https://github.com/SoccerNet/sn-jersey)
 * [McGill Hockey Player Tracking Dataset](https://github.com/grant81/hockeyTrackingDataset)
 * [SAM](https://github.com/davda54/sam)
+
+## License
+[![License](https://i.creativecommons.org/l/by-nc/3.0/88x31.png)](http://creativecommons.org/licenses/by-nc/3.0/)
+
+This work is licensed under a [Creative Commons Attribution-NonCommercial 3.0 Unported License](http://creativecommons.org/licenses/by-nc/3.0/).

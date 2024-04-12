@@ -329,8 +329,7 @@ def soccer_net_pipeline(args):
     if args.pipeline['str'] and success:
         print("Predict numbers")
         image_dir = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['crops_folder'])
-        #image_dir = '/media/storage/jersey_ids/SNNumbers/val'
-        #str_result_file = os.path.join(config.dataset['SoccerNet']['working_dir'], "val_jersey_id_predictions.json")
+
         command = f"conda run -n {config.str_env} python3 str.py  {config.dataset['SoccerNet']['str_model']}\
             --data_root={image_dir} --batch_size=1 --inference --result_file {str_result_file}"
         success = os.system(command) == 0
@@ -341,13 +340,12 @@ def soccer_net_pipeline(args):
         #8. combine tracklet results
         analysis_results = None
         #read predicted results, stack unique predictions, sum confidence scores for each, choose argmax
-        #results_dict, analysis_results = helpers.process_jersey_id_predictions(str_result_file, useBias=True)
+        results_dict, analysis_results = helpers.process_jersey_id_predictions(str_result_file, useBias=True)
         #results_dict, analysis_results = helpers.process_jersey_id_predictions_raw(str_result_file, useTS=True)
-        results_dict, analysis_results = helpers.process_jersey_id_predictions_bayesian(str_result_file, useTS=True, useBias=True, useTh=True)
+        #results_dict, analysis_results = helpers.process_jersey_id_predictions_bayesian(str_result_file, useTS=True, useBias=True, useTh=True)
 
         # add illegible tracklet predictions
         consolidated_dict = consolidated_results(image_dir, results_dict, illegible_path, soccer_ball_list=soccer_ball_list)
-        #consolidated_dict = consolidated_results(image_dir, results_dict, illegible_path)
 
         #save results as json
         final_results_path = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['final_result'])
@@ -377,20 +375,18 @@ if __name__ == '__main__':
             actions = {"soccer_ball_filter": False,
                        "feat": False,
                        "filter": False,
-                       "legible": True,
-                       "legible_eval": True,
+                       "legible": False,
+                       "legible_eval": False,
                        "pose": False,
                        "crops": False,
-                       "str": False,
-                       "combine": False,
-                       "eval": False}
+                       "str": True,
+                       "combine": True,
+                       "eval": True}
             args.pipeline = actions
             soccer_net_pipeline(args)
         elif args.dataset == 'Hockey':
-            actions = {"legible": True,
-                       "pose": False,
-                       "crops": False,
-                       "str": False}
+            actions = {"legible": False,
+                       "str": True}
             args.pipeline = actions
             hockey_pipeline(args)
         else:

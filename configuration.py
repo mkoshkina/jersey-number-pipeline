@@ -29,9 +29,7 @@ dataset = {'SoccerNet':
                         'pose_output_json': 'pose_results.json',
                         'crops_folder': 'crops',
                         'jersey_id_result': 'jersey_id_results.json',
-                        'final_result': 'final_results.json',
-                        'legibility_to_combine': ['raw_legible_resnet18.json', 'raw_legible_resnet34.json', 'raw_legible_vit.json'],
-                        'f1_weights': [0.94, 0.94, 0.936]
+                        'final_result': 'final_results.json'
                     },
                  'val': {
                         'images': 'val/images',
@@ -58,10 +56,7 @@ dataset = {'SoccerNet':
                      'gauss_filtered': 'train/main_subject_gauss_th=3.5_r=3.json',
                      'pose_input_json': 'pose_input_train.json',
                      'pose_output_json': 'pose_results_train.json',
-                     'raw_legible_result': 'train_raw_legible_combined.json',
-                     'legibility_to_combine': ['train_raw_legible_resnet18.json', 'train_raw_legible_resnet34.json',
-                                               'train_raw_legible_vit.json'],
-                     'f1_weights': [0.9307, 0.937, 0.9047]
+                     'raw_legible_result': 'train_raw_legible_combined.json'
                  },
                  'challenge': {
                         'images': 'challenge/images',
@@ -77,10 +72,7 @@ dataset = {'SoccerNet':
                         'crops_folder': 'challenge_crops',
                         'jersey_id_result': 'challenge_jersey_id_results.json',
                         'final_result': 'challenge_final_results.json',
-                        'raw_legible_result': 'challenge_raw_legible_vit.json',
-                        'legibility_to_combine': ['challenge_raw_legible_resnet18.json', 'challenge_raw_legible_resnet34.json',
-                                               'challenge_raw_legible_vit.json'],
-                        'f1_weights': [0.94, 0.94, 0.936]
+                        'raw_legible_result': 'challenge_raw_legible_vit.json'
                  },
                  'numbers_data': 'lmdb',
 
@@ -100,9 +92,7 @@ dataset = {'SoccerNet':
                  'numbers_data': 'jersey_number_dataset/jersey_numbers_lmdb',
                  'legibility_model':  'models/legibility_resnet34_hockey_20240201.pth',
                  'legibility_model_url':  "https://drive.google.com/uc?id=1RfxINtZ_wCNVF8iZsiMYuFOP7KMgqgDp",
-                 #'str_model': 'models/parseq_epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
-                 #'str_model': 'models/parseq_epoch=0-step=582-val_accuracy=91.5826-val_NED=93.9535.ckpt',
-                 'str_model': 'models/parseq_epoch=24-step=2575-val_accuracy=95.6044-val_NED=96.3255.ckpt',
-                 'str_model_url': "https://drive.google.com/uc?id=1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE"
+                 'str_model': 'models/parseq_epoch=3-step=95-val_accuracy=98.7903-val_NED=99.3952.ckpt',
+                 'str_model_url': "https://drive.google.com/uc?id=1FyM31xvSXFRusN0sZH0EWXoHwDfB9WIE",
             }
         }

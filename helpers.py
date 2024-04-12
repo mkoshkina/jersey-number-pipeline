@@ -30,22 +30,11 @@ json_annotation_template = {"id": 0,
 # Constants for pose-based torso cropping
 PADDING = 5
 CONFIDENCE_THRESHOLD = 0.4
-CALIBRATION_CONSTANT = 0.2
 TS = 2.367
 HEIGHT_MIN = 35
 WIDTH_MIN = 30
 
-calibration_offsets = [0, 0.12764952, 0.181846,  0.22805455, 0.17882232, 0.19591278, 0.19673138, \
- 0.27322199, 0.23161173, 0.1728571,  0.15665617, 0.21146313, 0.27525053,\
- 0.26231429, 0.25607589, 0.25515485, 0.29957967, 0.26758864, 0.04985322]
-
 bias_for_digits = [0.06, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094]
-
-def calibration_offset_lookup(confidence):
-    if (confidence - calibration_offsets[int(20*confidence)-1]) < 0:
-        return 0
-    else:
-        return calibration_offsets[int(20 * confidence) - 1]
 
 # Generate image JSON COCO format for ViTPose to consume
 def generate_json(file_names, json_file_path):
@@ -138,54 +127,6 @@ def get_mean_conf(points):
     for p in points:
         total += p[2]
     return total/len(points)
-
-def analyze_pose_for_occlusion(pose_file):
-    tracks = {'0':{}, '12':{}, '13':{}, '14':{}}
-    with open(pose_file, 'r') as f:
-        all_poses = json.load(f)
-        all_poses = all_poses["pose_results"]
-
-    for entry in all_poses:
-        img_name = entry["img_name"]
-        base_name = os.path.basename(img_name)
-        track = base_name.split('_')[0]
-        if not track in tracks.keys():
-            continue
-        mean_conf = get_mean_conf(entry["keypoints"])
-        tracks[track][base_name] = mean_conf
-
-    # sort
-    for k in tracks.keys():
-        current_track = tracks[k]
-        myKeys = list(current_track.keys())
-        myKeys.sort()
-        sorted_dict = {i: current_track[i] for i in myKeys}
-        tracks[k] = sorted_dict
-
-    with open("/media/storage/jersey_ids/SoccerNetResults/occlusion_pose.json", 'w') as f:
-        json.dump(tracks, f)
-
-    print(tracks)
-
-def filter_by_pose(pose_json, output_json, threshold=0.7):
-    tracks = {}
-    with open(pose_json, 'r') as f:
-        all_poses = json.load(f)
-        all_poses = all_poses["pose_results"]
-
-    for entry in all_poses:
-        img_name = entry["img_name"]
-        base_name = os.path.basename(img_name)
-        track = base_name.split('_')[0]
-        mean_conf = get_mean_conf(entry["keypoints"])
-        if not track in tracks.keys():
-            tracks[track] = []
-        if mean_conf <= threshold:
-            continue
-        tracks[track].append(base_name)
-
-    with open(output_json, 'w') as of:
-        json.dump(tracks, of)
 
 
 def generate_crops_from_detections(det_path, crops_destination_dir, legible_results, images_dir):
@@ -614,8 +555,6 @@ def process_jersey_id_predictions(file_path, useBias=False):
             total_prob = total_prob * float(x)
 
         all_results[tracklet].append([int(value), total_prob])
-        #all_results[tracklet].append([int(value), total_prob-CALIBRATION_CONSTANT])
-        #all_results[tracklet].append([int(value), total_prob - calibration_offset_lookup(total_prob)])
 
     final_full_results = {}
     for tracklet in all_results.keys():
@@ -696,40 +635,6 @@ def evaluate_legibility(gt_path, illegible_path, legible_tracklets, soccer_ball_
     Recall = TP / (TP + FN)
     print(f"Precision={Pr}, Recall={Recall}")
     print(f"F1={2 * Pr * Recall / (Pr + Recall)}")
-    #print(f"FP average num images: {np.mean(num_per_tracklet_FP)} \n Distribution: {num_per_tracklet_FP}")
-    #print(f"TP average num images: {np.mean(num_per_tracklet_TP)} \n Distribution: {num_per_tracklet_TP}")
-
-
-def find_best_threshold(legible_results, gt_path):
-    with open(gt_path, 'r') as gf:
-        gt_dict = json.load(gf)
-    thresholds = [0.1 * x for x in range(10)]
-    all_correct = []
-    all_fn = []
-    all_fp = []
-    for th in thresholds:
-        correct = 0
-        FP = 0
-        FN = 0
-        for tracklet in legible_results.keys():
-            track_results = (np.array(legible_results[tracklet])>th)
-            label = 0 if track_results.sum() == 0 else 1
-            if label == 0 and gt_dict[tracklet] == -1 or label == 1 and gt_dict[tracklet] > 0:
-                correct += 1
-            elif label == 1 and gt_dict[tracklet] == -1:
-                FP += 1
-            elif label == 0 and gt_dict[tracklet] > 0:
-                FN += 1
-
-        all_correct.append(correct)
-        all_fn.append(FN)
-        all_fp.append(FP)
-        print(f"Threshold {th} gives {correct} correct labels out of {len(legible_results.keys())}")
-
-    best_acc_indx = np.argmax(all_correct)
-    full_results = {'correct':all_correct, 'FN': all_fn, 'FP': all_fp}
-
-    return thresholds[best_acc_indx], all_correct[best_acc_indx], full_results
 
 
 SKIP_ILLEGIBLE = False
@@ -765,13 +670,13 @@ def evaluate_results(consolidated_dict, gt_dict, full_results = None):
             illegible_gt_count += 1
         elif not (full_results is None):
             if m in full_results.keys():
-                print(f"track {m} , true label {gt_dict[m]}; predictions {full_results[m]}")
+                #print(f"track {m} , true label {gt_dict[m]}; predictions {full_results[m]}")
                 if gt_dict[m] in full_results[m]['unique']:
                     count_of_correct_in_full_results += 1
-        print(f"track {m} , true label {gt_dict[m]}; prediction {consolidated_dict[m]}")
-    print(f'mismarked {illegible_mistake_count} out of {len(mistakes)} as illegible')
-    print(f'mismarked {illegible_gt_count} out of {len(mistakes)} as legible')
-    print(f"predicted correctly but not picked: {count_of_correct_in_full_results}")
+        #print(f"track {m} , true label {gt_dict[m]}; prediction {consolidated_dict[m]}")
+    #print(f'mismarked {illegible_mistake_count} out of {len(mistakes)} as illegible')
+    #print(f'mismarked {illegible_gt_count} out of {len(mistakes)} as legible')
+    #print(f"predicted correctly but not picked: {count_of_correct_in_full_results}")
 
 def convert_polygon_to_bbox(polygon):
     # Initialize min and max values with the first vertex of the polygon.
@@ -788,24 +693,6 @@ def convert_polygon_to_bbox(polygon):
 
     # Create the AABB as a tuple of (min_x, min_y, max_x, max_y).
     return [min_x, min_y, max_x, max_y]
-
-
-def evaluate_pose_estimation(input_json, crops_destination_dir):
-    all_crops = os.listdir(crops_destination_dir)
-    all_tracklets_in_crops = set([])
-    for crop in all_crops:
-        filename = os.path.basename(crop)
-        tmp = filename.split('_')
-        all_tracklets_in_crops.add(tmp[0])
-    with open(input_json, 'r') as f:
-        input = json.load(f)
-
-    input_tracklets = input.keys()
-
-    total_legible = len(input_tracklets)
-    missing = total_legible - len(all_tracklets_in_crops)
-
-    print(f"Missing {missing} tracklets out of {total_legible}")
 
 
 def get_track(path):

@@ -207,6 +207,7 @@ def test_model(model, subset, model_type = None):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 cudnn.benchmark = True
 
+# Non-STR method for number recognition - used for comparison
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 

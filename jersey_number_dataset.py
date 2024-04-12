@@ -29,28 +29,6 @@ data_transforms = {
             ]),
         },
 
-    # 'train_extra': transforms.Compose([
-    #     transforms.RandomGrayscale(),
-    #     transforms.ColorJitter(brightness=.5, hue=.3),
-    #     v2.ElasticTransform(alpha=250.0),
-    #     v2.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)),
-    #     v2.RandomAdjustSharpness(sharpness_factor=2),
-    #     v2.RandomAutocontrast(),
-    #     transforms.Resize((256, 256)),
-    #     transforms.ToTensor(),
-    #     transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
-    # ]),
-    # 'train': transforms.Compose([
-    #     transforms.RandomChoice([
-    #         transforms.RandomGrayscale(),
-    #         transforms.RandomAdjustSharpness(3, p=0.5),
-    #         transforms.RandomAutocontrast(p=0.5),
-    #         transforms.RandomApply(torch.nn.ModuleList([transforms.GaussianBlur(kernel_size=(3, 5), sigma=(.8, 5.))]), p = 0.5),
-    #         transforms.RandomApply(torch.nn.ModuleList([transforms.ColorJitter(brightness=.8, contrast=0.8, saturation=0.5, hue=0.1)]), p = 0.5)]),
-    #     transforms.Resize((256, 256)),
-    #     transforms.ToTensor(),
-    #     transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
-    # ]),
     'val': {
         'resnet':
             transforms.Compose([
