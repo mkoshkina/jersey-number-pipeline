@@ -1,7 +1,7 @@
-# General Framework for Jersey Number Recognition in Sports
-Code, data, and model weights for paper  [General Framework for Jersey Number Recognition in Sports]() (Maria Koshkina, James H. Elder).
+# A General Framework for Jersey Number Recognition in Sports
+Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports]() (Maria Koshkina, James H. Elder).
 
-![Pipeline](docs/soccer-pipeline.pdf)
+![Pipeline](docs/soccer_pipeline.pdf)
 
 Image-level detection, localization and recognition (experiments on Hockey dataset):
   - legibility classifier
