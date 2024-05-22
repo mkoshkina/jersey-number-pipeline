@@ -59,7 +59,7 @@ Download and save under /data subfolder.
 * Weakly-labelled jersey number crops used to fine-tune STR in LMDB format can be downloaded [here](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing).
 
 Hockey (comprised of legibility dataset and jersey number dataset): 
-* Download and extract under data/Hockey subfolder - [hockey data](https://drive.google.com/file/d/16ooDZsrLd8iF-KByGThT6I5Cw4GAT_x9/view?usp=sharing)
+* Request access by contacting [Maria Koshkina](mailto:koshkina@hotmail.com?subject='Hockey Dataset Access'). Extract under data/Hockey subfolder.
 
 ### Trained Legibility Classifier Weights:
 Download and place under jersey-number-pipeline/models/.
@@ -106,7 +106,7 @@ python3 legibility_classifier.py --finetune --arch resnet34 --sam --data <new-da
 
 Fine-tune PARSeq on weakly-labelled SoccerNet data:
 ```
-python3 SoccerNet train --train_str
+python3 main.py SoccerNet train --train_str
 ```
 
 Trained model will be under str/parseq/outputs.
