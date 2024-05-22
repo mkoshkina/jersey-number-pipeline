@@ -59,7 +59,7 @@ Download and save under /data subfolder.
 * Weakly-labelled jersey number crops used to fine-tune STR in LMDB format can be downloaded [here](https://drive.google.com/file/d/1PX8XDF3nNMZAvcjL6M5hurwX78ePAhSs/view?usp=sharing).
 
 Hockey (comprised of legibility dataset and jersey number dataset): 
-* Request access by contacting [Maria Koshkina](mailto:koshkina@hotmail.com?subject='Hockey Dataset Access'). Extract under data/Hockey subfolder.
+* Request access by contacting [Maria Koshkina](mailto:koshkina@hotmail.com?subject=Hockey). Extract under data/Hockey subfolder.
 
 ### Trained Legibility Classifier Weights:
 Download and place under jersey-number-pipeline/models/.
