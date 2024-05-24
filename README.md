@@ -112,6 +112,7 @@ python3 main.py SoccerNet train --train_str
 Trained model will be under str/parseq/outputs.
 
 ## Citation
+```
 @misc{koshkina2024general,
       title={A General Framework for Jersey Number Recognition in Sports Video}, 
       author={Maria Koshkina and James H. Elder},
@@ -120,8 +121,9 @@ Trained model will be under str/parseq/outputs.
       archivePrefix={arXiv},
       primaryClass={cs.CV}
 }
+```
 
-## Acknowledgement
+## Acknowledgements
 We would like to thank authors of the following repositories: 
 * [PARSeq](https://github.com/baudm/parseq)
 * [Centroid-Reid](https://github.com/mikwieczorek/centroids-reid)
