@@ -1,5 +1,5 @@
 # A General Framework for Jersey Number Recognition in Sports
-Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports]() (Maria Koshkina, James H. Elder).
+Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports](https://arxiv.org/abs/2405.13896) (Maria Koshkina, James H. Elder).
 
 ![Pipeline](docs/soccer_pipeline.png)
 
@@ -110,6 +110,16 @@ python3 main.py SoccerNet train --train_str
 ```
 
 Trained model will be under str/parseq/outputs.
+
+## Citation
+@misc{koshkina2024general,
+      title={A General Framework for Jersey Number Recognition in Sports Video}, 
+      author={Maria Koshkina and James H. Elder},
+      year={2024},
+      eprint={2405.13896},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 
 ## Acknowledgement
 We would like to thank authors of the following repositories: 
