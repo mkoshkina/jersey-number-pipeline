@@ -1,5 +1,5 @@
 # A General Framework for Jersey Number Recognition in Sports
-Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports]([https://arxiv.org/abs/2405.13896](https://openaccess.thecvf.com/content/CVPR2024W/CVsports/papers/Koshkina_A_General_Framework_for_Jersey_Number_Recognition_in_Sports_Video_CVPRW_2024_paper.pdf)) (Maria Koshkina, James H. Elder).
+Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports](https://openaccess.thecvf.com/content/CVPR2024W/CVsports/papers/Koshkina_A_General_Framework_for_Jersey_Number_Recognition_in_Sports_Video_CVPRW_2024_paper.pdf) (Maria Koshkina, James H. Elder).
 
 ![Pipeline](docs/soccer_pipeline.png)
 
