@@ -1,5 +1,5 @@
 # A General Framework for Jersey Number Recognition in Sports
-Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports](https://arxiv.org/abs/2405.13896) (Maria Koshkina, James H. Elder).
+Code, data, and model weights for paper  [A General Framework for Jersey Number Recognition in Sports]([https://arxiv.org/abs/2405.13896](https://openaccess.thecvf.com/content/CVPR2024W/CVsports/papers/Koshkina_A_General_Framework_for_Jersey_Number_Recognition_in_Sports_Video_CVPRW_2024_paper.pdf)) (Maria Koshkina, James H. Elder).
 
 ![Pipeline](docs/soccer_pipeline.png)
 
@@ -113,13 +113,13 @@ Trained model will be under str/parseq/outputs.
 
 ## Citation
 ```
-@misc{koshkina2024general,
-      title={A General Framework for Jersey Number Recognition in Sports Video}, 
-      author={Maria Koshkina and James H. Elder},
-      year={2024},
-      eprint={2405.13896},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@InProceedings{Koshkina_2024_CVPR,
+    author    = {Koshkina, Maria and Elder, James H.},
+    title     = {A General Framework for Jersey Number Recognition in Sports Video},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2024},
+    pages     = {3235-3244}
 }
 ```
 
