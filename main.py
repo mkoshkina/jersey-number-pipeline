@@ -372,20 +372,20 @@ if __name__ == '__main__':
 
     if not args.train_str:
         if args.dataset == 'SoccerNet':
-            actions = {"soccer_ball_filter": False,
-                       "feat": False,
-                       "filter": False,
-                       "legible": False,
+            actions = {"soccer_ball_filter": True,
+                       "feat": True,
+                       "filter": True,
+                       "legible": True,
                        "legible_eval": False,
-                       "pose": False,
-                       "crops": False,
+                       "pose": True,
+                       "crops": True,
                        "str": True,
                        "combine": True,
                        "eval": True}
             args.pipeline = actions
             soccer_net_pipeline(args)
         elif args.dataset == 'Hockey':
-            actions = {"legible": False,
+            actions = {"legible": True,
                        "str": True}
             args.pipeline = actions
             hockey_pipeline(args)
